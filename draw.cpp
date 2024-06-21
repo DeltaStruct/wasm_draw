@@ -5,20 +5,8 @@ using namespace std;
 
 class draw_canvas {
   // canvasを使用する
-  int height,width;
   public:
-  draw_canvas(){
-    height = EM_ASM_INT({ return window.innerHeight; });
-    width = EM_ASM_INT({ return window.innerWidth; });
-    EM_ASM({
-      var canvas = document.createElement('canvas');
-      canvas.id = 'canvas';
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
-      document.body.appendChild(canvas);
-    });
-    cout << height << ' ' << width << endl;
-  }
+  int height,width;
 
   /* Call JavaScript function*/
   void fillRect(int x,int y,int w,int h){
@@ -175,9 +163,33 @@ class draw_canvas {
       ctx.translate($0,$1);
     },x,y);
   }
+  void setFillColor(int r,int g,int b,double a){
+    EM_ASM({
+      var canvas = document.getElementById('canvas');
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = "rgba("+String($0)+","+String($1)+","+String($2)+","+String($3)+")";
+      console.log(ctx.fillStyle);
+    },r,g,b,a);
+  }
+
+  /* Constructor */
+  draw_canvas(){
+    height = EM_ASM_INT({ return window.innerHeight; });
+    width = EM_ASM_INT({ return window.innerWidth; });
+    EM_ASM({
+      var canvas = document.createElement('canvas');
+      canvas.id = 'canvas';
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+      document.body.prepend(canvas);
+    });
+    this->setFillColor(54,69,79,1);
+    this->fillRect(0,0,this->width,this->height);
+    this->setFillColor(255,69,79,1);
+    this->fillText("made by DeltaStruct",0,0);
+  }
 } draw;
 
 int main(){
-  draw.fillRect(0,0,0,0); draw.strokeRect(0,0,0,0);
   return 0;
 }
