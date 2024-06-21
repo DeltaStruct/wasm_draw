@@ -3,9 +3,13 @@
 #include <vector>
 using namespace std;
 
+EM_JS(void, jsFunction, (const char* message), {
+  var jsMessage = UTF8ToString(message);
+  window.alert(jsMessage);
+});
 class draw_canvas {
   // canvasを使用する
-  public:
+  publiwc:
   int height,width;
 
   /* Call JavaScript function*/
@@ -34,6 +38,7 @@ class draw_canvas {
     EM_ASM({
       var canvas = document.getElementById('canvas');
       var ctx = canvas.getContext('2d');
+      console.log(typeof($0));
       ctx.fillText(UTF8ToString($0),$1,$2);
     },text,x,y);
   }
@@ -185,6 +190,8 @@ class draw_canvas {
     });
     this->setFillColor(54,69,79,1);
     this->fillRect(0,0,this->width,this->height);
+    const char* a = "a";
+    jsFunction(a);
     this->setFillColor(255,69,79,1);
     this->fillText("made by DeltaStruct",0,0);
   }
